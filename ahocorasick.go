@@ -5,7 +5,7 @@ import (
 )
 
 import (
-	"github.com/anknown/darts"
+	"github.com/gglachant/darts"
 )
 
 const FAIL_STATE = -1
@@ -14,15 +14,15 @@ const ROOT_STATE = 1
 type Machine struct {
 	trie    *godarts.DoubleArrayTrie
 	failure []int
-	output  map[int]([][]rune)
+	output  map[int]([][]byte)
 }
 
 type Term struct {
 	Pos  int
-	Word []rune
+	Word []byte
 }
 
-func (m *Machine) Build(keywords [][]rune) (err error) {
+func (m *Machine) Build(keywords [][]byte) (err error) {
 	if len(keywords) == 0 {
 		return fmt.Errorf("empty keywords")
 	}
@@ -35,7 +35,7 @@ func (m *Machine) Build(keywords [][]rune) (err error) {
 		return err
 	}
 
-	m.output = make(map[int]([][]rune), 0)
+	m.output = make(map[int]([][]byte), 0)
 	for idx, val := range d.Output {
 		m.output[idx] = append(m.output[idx], val)
 	}
@@ -100,7 +100,7 @@ func (m *Machine) PrintOutput() {
 	fmt.Printf("+-----+----------+\n")
 }
 
-func (m *Machine) g(inState int, input rune) (outState int) {
+func (m *Machine) g(inState int, input byte) (outState int) {
 	if inState == FAIL_STATE {
 		return ROOT_STATE
 	}
@@ -131,7 +131,7 @@ func (m *Machine) setF(inState, outState int) {
 	m.failure[inState] = outState
 }
 
-func (m *Machine) MultiPatternSearch(content []rune, returnImmediately bool) [](*Term) {
+func (m *Machine) MultiPatternSearch(content []byte, returnImmediately bool) [](*Term) {
 	terms := make([](*Term), 0)
 
 	state := ROOT_STATE
@@ -159,7 +159,7 @@ func (m *Machine) MultiPatternSearch(content []rune, returnImmediately bool) [](
 	return terms
 }
 
-func (m *Machine) ExactSearch(content []rune) [](*Term) {
+func (m *Machine) ExactSearch(content []byte) [](*Term) {
 	if m.trie.ExactMatchSearch(content, 0) {
 		t := new(Term)
 		t.Word = content

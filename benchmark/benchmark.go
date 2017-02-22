@@ -11,8 +11,8 @@ import (
 )
 
 import (
-	"github.com/anknown/ahocorasick"
 	"github.com/cloudflare/ahocorasick"
+	"github.com/gglachant/ahocorasick"
 )
 
 const CHN_DICT_FILE = "./cn/dictionary.txt"
@@ -41,8 +41,8 @@ func ReadBytes(filename string) ([][]byte, error) {
 	return dict, nil
 }
 
-func ReadRunes(filename string) ([][]rune, error) {
-	dict := [][]rune{}
+func ReadRunes(filename string) ([][]byte, error) {
+	dict := [][]byte{}
 
 	f, err := os.OpenFile(filename, os.O_RDONLY, 0660)
 	if err != nil {
@@ -56,7 +56,7 @@ func ReadRunes(filename string) ([][]rune, error) {
 			break
 		}
 		l = bytes.TrimSpace(l)
-		dict = append(dict, bytes.Runes(l))
+		dict = append(dict, l)
 	}
 
 	return dict, nil
@@ -151,7 +151,6 @@ func TestBEnglish() {
 		return
 	}
 
-	contentRune := bytes.Runes([]byte(content))
 	end := time.Now()
 	fmt.Printf("load file cost:%d(ms)\n", (end.UnixNano()-start.UnixNano())/(1000*1000))
 
@@ -163,7 +162,7 @@ func TestBEnglish() {
 		return
 	}
 	//terms := m.Search(contentRune)
-	m.MultiPatternSearch(contentRune, false)
+	m.MultiPatternSearch(content, false)
 	end = time.Now()
 	fmt.Printf("search cost:%d(ms)\n", (end.UnixNano()-start.UnixNano())/(1000*1000))
 	/*
@@ -190,7 +189,6 @@ func TestBChinese() {
 		return
 	}
 
-	contentRune := bytes.Runes([]byte(content))
 	end := time.Now()
 	fmt.Printf("load file cost:%d(ms)\n", (end.UnixNano()-start.UnixNano())/(1000*1000))
 
@@ -202,7 +200,7 @@ func TestBChinese() {
 		return
 	}
 	//terms := m.Search(contentRune)
-	m.MultiPatternSearch(contentRune, false)
+	m.MultiPatternSearch(content, false)
 	end = time.Now()
 	fmt.Printf("search cost:%d(ms)\n", (end.UnixNano()-start.UnixNano())/(1000*1000))
 	/*

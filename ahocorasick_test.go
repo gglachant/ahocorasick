@@ -9,8 +9,8 @@ import (
 	"testing"
 )
 
-func Read(filename string) ([][]rune, error) {
-	dict := [][]rune{}
+func Read(filename string) ([][]byte, error) {
+	dict := [][]byte{}
 
 	f, err := os.OpenFile(filename, os.O_RDONLY, 0660)
 	if err != nil {
@@ -24,7 +24,7 @@ func Read(filename string) ([][]rune, error) {
 			break
 		}
 		l = bytes.TrimSpace(l)
-		dict = append(dict, bytes.Runes(l))
+		dict = append(dict, l)
 	}
 
 	return dict, nil
@@ -53,7 +53,7 @@ func TestMultiPatternSearchEnglish(t *testing.T) {
 	//m.PrintFailure()
 	//m.PrintOutput()
 
-	content := []rune("ushers")
+	content := []byte("ushers")
 	terms := m.MultiPatternSearch(content, false)
 	for _, term := range terms {
 		fmt.Printf("find %s @%d in %s\n", string(term.Word), term.Pos, string(content))
@@ -72,7 +72,7 @@ func TestMultiPatternSearchChinese(t *testing.T) {
 	//m.PrintFailure()
 	//m.PrintOutput()
 
-	content := []rune("你不会想到阿拉伯人会踢出阿根廷风格的足球更何况是埃及风格")
+	content := []byte("你不会想到阿拉伯人会踢出阿根廷风格的足球更何况是埃及风格")
 	terms := m.MultiPatternSearch(content, false)
 	for _, term := range terms {
 		fmt.Printf("find %s @%d in %s\n", string(term.Word), term.Pos, string(content))
